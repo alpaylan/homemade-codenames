@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export const generateWords = () => {
   // delete duplicates
   
-    const uniqueWords = [...new Set(words)];
+    const uniqueWords = Array.from(new Set(words));
 
   // randomly shuffle words
 
