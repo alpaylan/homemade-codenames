@@ -79,6 +79,8 @@
     async function fetchWords() {
       const response = await fetch(wordListUrl);
       words = await response.json();
+      // Make all words unique
+      words = [...new Set(words)];
     }
 
     function shuffle(array, seed) {
