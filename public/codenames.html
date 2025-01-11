@@ -55,6 +55,12 @@
       background-color: rgba(0, 0, 0, 0.7);
       color: white;
     }
+
+    #qrcode {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
   </style>
 </head>
 
@@ -66,15 +72,19 @@
     <button id="start-game">Start Game</button>
     <button id="show-all">Show All</button>
     <button id="start-timer">Start Timer</button>
+    <div id="qrcode"></div>
   </div>
   <p id="scoreboard"></p>
   <div id="game-board"></div>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     const wordListUrl = "https://raw.githubusercontent.com/alpaylan/homemade-codenames/refs/heads/main/public/words.json";
     let words = [];
     let redCount = 0;
     let blueCount = 0;
+
+    let params = new URLSearchParams(window.location.search);
+    document.getElementById("seed").value = params.get("seed") || generateRandomSeed();
 
     async function fetchWords() {
       const response = await fetch(wordListUrl);
@@ -118,7 +128,7 @@
       const rng = mulberry32(seed);
       const extraColor = rng() < 0.5 ? "red" : "blue";
       colors.push(extraColor);
-      totalBlueCount =  extraColor === "blue" ? 9 : 8;
+      totalBlueCount = extraColor === "blue" ? 9 : 8;
       totalRedCount = extraColor === "red" ? 9 : 8;
       updateScoreboard();
 
@@ -175,6 +185,17 @@
     document.getElementById("start-game").addEventListener("click", async () => {
       const seedInput = document.getElementById("seed");
       if (!seedInput.value) seedInput.value = generateRandomSeed();
+      // Make a QR code for the seed
+      const qrCode = new QRCode(document.getElementById("qrcode"), {
+        text: "https://codenames-gamma.vercel.app/codenames.html?seed=" + seedInput.value,
+        width: 96,
+        height: 96,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+
+
       const seed = parseInt(seedInput.value, 36);
       redCount = 0;
       blueCount = 0;
