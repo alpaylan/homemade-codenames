@@ -60,11 +60,14 @@
 
 <body>
   <h1>Codenames Game</h1>
-  <label for="seed">Game Seed: </label>
-  <input type="text" id="seed" placeholder="Enter seed (optional)">
-  <button id="start-game">Start Game</button>
-  <button id="show-all">Show All</button>
-  <p id="scoreboard">Red: 0/8, Blue: 0/9</p>
+  <div>
+    <label for="seed">Game Seed: </label>
+    <input type="text" id="seed" placeholder="Enter seed (optional)">
+    <button id="start-game">Start Game</button>
+    <button id="show-all">Show All</button>
+    <button id="start-timer">Start Timer</button>
+  </div>
+  <p id="scoreboard"></p>
   <div id="game-board"></div>
 
   <script>
@@ -99,6 +102,9 @@
       return Math.random().toString(36).substring(2, 8);
     }
 
+    let totalRedCount = 8;
+    let totalBlueCount = 8;
+
     function generateBoard(seed) {
       const colors = [
         ...Array(8).fill("red"),
@@ -110,11 +116,15 @@
       const rng = mulberry32(seed);
       const extraColor = rng() < 0.5 ? "red" : "blue";
       colors.push(extraColor);
+      totalBlueCount =  extraColor === "blue" ? 9 : 8;
+      totalRedCount = extraColor === "red" ? 9 : 8;
+      updateScoreboard();
 
       shuffle(colors, seed);
-      shuffle(words, seed);
+      let currentWords = words.slice();
+      shuffle(currentWords, seed);
 
-      const selectedWords = words.slice(0, 25);
+      const selectedWords = currentWords.slice(0, 25);
       return selectedWords.map((word, i) => ({
         word,
         color: colors[i],
@@ -148,7 +158,7 @@
     }
 
     function revealAllTiles() {
-      for(const tile of document.getElementsByClassName("tile")) {
+      for (const tile of document.getElementsByClassName("tile")) {
         tile.classList.add("revealed");
       }
     }
@@ -157,7 +167,7 @@
 
     function updateScoreboard() {
       const scoreboard = document.getElementById("scoreboard");
-      scoreboard.textContent = `Red: ${redCount}/8, Blue: ${blueCount}/9`;
+      scoreboard.textContent = `Red: ${redCount}/${totalRedCount}, Blue: ${blueCount}/${totalBlueCount}`;
     }
 
     document.getElementById("start-game").addEventListener("click", async () => {
