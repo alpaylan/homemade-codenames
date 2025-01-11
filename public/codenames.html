@@ -23,7 +23,7 @@
 
     .tile {
       width: 100px;
-      height: 100px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -148,9 +148,7 @@
     }
 
     function revealAllTiles() {
-      console.log("WTF")
       for(const tile of document.getElementsByClassName("tile")) {
-        console.log(tile)
         tile.classList.add("revealed");
       }
     }
