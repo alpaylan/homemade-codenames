@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,11 +14,13 @@
       justify-content: center;
       padding: 20px;
     }
+
     #game-board {
       display: grid;
       grid-template-columns: repeat(5, 100px);
       grid-gap: 10px;
     }
+
     .tile {
       width: 100px;
       height: 100px;
@@ -31,20 +34,36 @@
       font-size: 14px;
       transition: background-color 0.3s;
     }
+
     .revealed {
       pointer-events: none;
     }
-    .red { background-color: rgba(255, 0, 0, 0.7); }
-    .blue { background-color: rgba(0, 0, 255, 0.7); }
-    .yellow { background-color: rgba(255, 255, 0, 0.7); }
-    .black { background-color: rgba(0, 0, 0, 0.7); color: white; }
+
+    .red[class~="revealed"] {
+      background-color: rgba(255, 0, 0, 0.7);
+    }
+
+    .blue[class~="revealed"] {
+      background-color: rgba(0, 0, 255, 0.7);
+    }
+
+    .yellow[class~="revealed"] {
+      background-color: rgba(255, 255, 0, 0.7);
+    }
+
+    .black[class~="revealed"] {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+    }
   </style>
 </head>
+
 <body>
   <h1>Codenames Game</h1>
   <label for="seed">Game Seed: </label>
   <input type="text" id="seed" placeholder="Enter seed (optional)">
   <button id="start-game">Start Game</button>
+  <button id="show-all">Show All</button>
   <p id="scoreboard">Red: 0/8, Blue: 0/9</p>
   <div id="game-board"></div>
 
@@ -108,7 +127,7 @@
       gameBoard.innerHTML = "";
       board.forEach((tile, index) => {
         const tileDiv = document.createElement("div");
-        tileDiv.className = "tile";
+        tileDiv.className = `tile ${tile.color}`;
         tileDiv.textContent = tile.word;
         tileDiv.addEventListener("click", () => revealTile(tile, tileDiv));
         gameBoard.appendChild(tileDiv);
@@ -128,6 +147,16 @@
       updateScoreboard();
     }
 
+    function revealAllTiles() {
+      console.log("WTF")
+      for(const tile of document.getElementsByClassName("tile")) {
+        console.log(tile)
+        tile.classList.add("revealed");
+      }
+    }
+
+    document.getElementById("show-all").addEventListener("click", () => revealAllTiles());
+
     function updateScoreboard() {
       const scoreboard = document.getElementById("scoreboard");
       scoreboard.textContent = `Red: ${redCount}/8, Blue: ${blueCount}/9`;
@@ -146,4 +175,5 @@
     });
   </script>
 </body>
+
 </html>
